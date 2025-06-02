@@ -20,11 +20,7 @@ Este projeto implementa um sistema básico de cadastro e consulta de pacientes. 
 
 - **bd_paciente.csv**: Arquivo de dados que deve estar no mesmo diretório. Ele deve conter os registros dos pacientes seguindo o formato: `id,cpf,nome,idade,data_cadastro`
 
----
-
 - **main.c**: Contém todas as implementações do fluxo do programa, incluindo a leitura dos dados do CSV, execução do menu principal, funções de consulta, impressão da lista e os _stubs_ para futuras implementações de inserção, remoção e atualização do paciente.
-
----
 
 - **arquivo.h**: Declarações das funções que compõem o sistema (menu, consulta, atualização, remoção, inserção, impressão e verificação se o arquivo CSV está vazio).
 
@@ -49,7 +45,7 @@ Este TAD é a base para manipulação dos dados, permitindo que as operações d
 1. **Pré-requisitos**:  
  - Um compilador de C.  
  - Certifique-se de ter o arquivo `bd_paciente.csv` no mesmo diretório do código.  
- 
+
 ---
 
 2. **Compilação**:  
@@ -77,17 +73,11 @@ O menu apresentado permitirá a escolha entre consultar pacientes, atualizar, re
 - **TAD Paciente**:  
 O sistema utiliza o TAD *Paciente* para encapsular os dados de cada paciente. Essa escolha possibilita uma manipulação clara e objetiva das informações e facilita futuras expansões do projeto.
 
----
-
 - **Consulta e Impressão**:  
 A consulta pode ser realizada tanto por nome quanto por CPF, utilizando funções auxiliares para busca sem diferenciar letras maiúsculas e minúsculas. Além disso, a lista de pacientes é apresentada com 20 registros por página, oferecendo ao usuário a opção de continuar a visualizar ou retornar ao menu inicial.
 
----
-
 - **Funções Stub**:  
 As funções para atualizar, remover e inserir pacientes são definidas como _stubs_. Essa estratégia permite uma futura implementação sem quebrar o fluxo principal do sistema, além de facilitar a visualização do que será a versão final do sistema.
-
----
 
 - **Validação do Arquivo CSV**:  
 Antes de realizar as operações, o sistema verifica se o arquivo CSV possui conteúdo para evitar erros em casos de arquivo vazio.
@@ -98,8 +88,6 @@ Antes de realizar as operações, o sistema verifica se o arquivo CSV possui con
 
 - **Rotinas de Busca**:  
 Foi desenvolvida uma função auxiliar (`strcasestr_custom`) para buscar substrings de forma case insensitive, garantindo que a busca por nomes seja feita sem restrição quanto à capitalização.
-
----
 
 - **Interface com o Usuário**:  
 O menu principal e os controles de navegação (especialmente na função de impressão com paginação) foram desenvolvidos para serem intuitivos, proporcionando uma melhor experiência ao usuário e buscando otimizar a execução do programa.
