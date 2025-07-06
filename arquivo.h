@@ -27,7 +27,7 @@ int inserir_paciente(FILE *input_file_1);
 int imprimir_lista_pacientes(FILE *input_file_1);
 
 // Limpa a tela e sai do programa (ou retorna ao menu).
-int sair(FILE *input_file_1);
+int sair();
 
 // Vê se o arquivo CSV está vazio, retornando 0 se estiver vazio e 1 se houver conteúdo.
 int arquivo_esta_vazio(FILE *input_file_1);
