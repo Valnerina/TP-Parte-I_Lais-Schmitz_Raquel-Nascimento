@@ -1,21 +1,22 @@
-// paciente.h
 #ifndef PACIENTE_H
 #define PACIENTE_H
 
-// Inclusões mínimas se necessário para a definição da struct (raro aqui)
-
-/* --- TAD Paciente ---
-   Estrutura com os dados de um paciente.
-*/
+/*
+ * TAD Paciente
+ * Representa os dados de um paciente no sistema.
+ */
 typedef struct {
-  int id;
-  char cpf[20];
-  char nome[100];
-  int idade;
-  char data_cadastro[15];
+    int id;
+    char cpf[20];
+    char nome[100];
+    int idade;
+    char data_cadastro[15];
 } Paciente;
 
-// Protótipos de funções específicas do TAD Paciente, se houver
-// Ex: void imprimirPaciente(Paciente p);
+// Converte uma linha CSV em um objeto Paciente
+Paciente paciente_parse(char *linha_csv);
 
-#endif /* PACIENTE_H */
+// Imprime um paciente formatado
+void paciente_imprimir(Paciente p);
+
+#endif
