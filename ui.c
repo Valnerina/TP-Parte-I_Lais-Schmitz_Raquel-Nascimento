@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+// Consulta pacientes por nome ou CPF
 int ui_exibir_por_nome_ou_cpf(BDPaciente *bd) {
     char opcao;
     char termo[100];
@@ -17,13 +18,15 @@ int ui_exibir_por_nome_ou_cpf(BDPaciente *bd) {
 
     if (opcao == '1') {
         printf("Digite o nome: ");
-        fgets(termo, sizeof(termo), stdin);
-        termo[strcspn(termo, "\n")] = 0;
+        fgets(termo, sizeof(termo), stdin); // lê nome
+        termo[strcspn(termo, "\n")] = 0; // remove '\n'
 
+        // imprime cabeçalho
         printf("\n%-4s %-17s %-20s %-7s %-12s\n", "ID", "CPF", "Nome", "Idade", "Data_Cadastro");
         No *atual = bd->inicio;
         while (atual) {
             Paciente p = atual->paciente;
+            // compara prefixo do nome
             if (strlen(termo) > 0 && strncasecmp(p.nome, termo, strlen(termo)) == 0) {
                 paciente_imprimir(p);
                 encontrou = 1;
@@ -32,13 +35,15 @@ int ui_exibir_por_nome_ou_cpf(BDPaciente *bd) {
         }
     } else if (opcao == '2') {
         printf("Digite o CPF: ");
-        fgets(termo, sizeof(termo), stdin);
+        fgets(termo, sizeof(termo), stdin); // lê CPF
         termo[strcspn(termo, "\n")] = 0;
 
+        // imprime cabeçalho
         printf("\n%-4s %-17s %-20s %-7s %-12s\n", "ID", "CPF", "Nome", "Idade", "Data_Cadastro");
         No *atual = bd->inicio;
         while (atual) {
             Paciente p = atual->paciente;
+            // compara prefixo do CPF
             if (strlen(termo) > 0 && strncmp(p.cpf, termo, strlen(termo)) == 0) {
                 paciente_imprimir(p);
                 encontrou = 1;
@@ -71,12 +76,12 @@ void ui_consultar(BDPaciente *bd) {
     scanf(" %c", &tipo);
     while (getchar() != '\n'); // limpa buffer
 
-    if (tipo == '3') return;
+    if (tipo == '3') return; // retorna ao menu
 
     // Consulta por nome
     if (tipo == '1') {
         printf("Digite o nome: ");
-        fgets(query, sizeof(query), stdin);
+        fgets(query, sizeof(query), stdin); // lê nome
         query[strcspn(query, "\n")] = '\0';
 
         printf("\n%-4s %-17s %-20s %-7s %-12s\n", "ID", "CPF", "Nome", "Idade", "Data_Cadastro");
@@ -130,14 +135,15 @@ void ui_inserir(BDPaciente *bd) {
     // CPF
     while (1) {
         printf("CPF (somente números, 11 dígitos): ");
-        fflush(stdout);
+        fflush(stdout); // exibe imediato
         if (!fgets(buffer, sizeof(buffer), stdin)) {
             printf("[Erro] Erro na leitura do CPF. Tente novamente.\n");
             continue;
         }
 
-        buffer[strcspn(buffer, "\n")] = 0;
+        buffer[strcspn(buffer, "\n")] = 0; // remove \n
 
+        // verifica se tem 11 dígitos
         int valido = strlen(buffer) == 11;
         size_t len = strlen(buffer);
         for (size_t i = 0; i < len && valido; i++) {
@@ -147,6 +153,7 @@ void ui_inserir(BDPaciente *bd) {
         if (!valido) {
             printf("[Erro] CPF inválido! Tente novamente.\n");
         } else {
+            // formata o CPF com pontos e traço
             snprintf(novo.cpf, sizeof(novo.cpf), "%.3s.%.3s.%.3s-%.2s", buffer, buffer+3, buffer+6, buffer+9);
             break;
         }
@@ -184,6 +191,7 @@ void ui_inserir(BDPaciente *bd) {
         novo.data_cadastro[strcspn(novo.data_cadastro, "\n")] = 0;
 
         int ano, mes, dia;
+        // valida estrutura da data
         if (sscanf(novo.data_cadastro, "%d-%d-%d", &ano, &mes, &dia) == 3 &&
             ano >= 1900 && ano <= 2100 &&
             mes >= 1 && mes <= 12 &&
@@ -195,6 +203,8 @@ void ui_inserir(BDPaciente *bd) {
     }
 
     novo.id = 0; // será atribuído no bd_inserir
+
+    // Confirmação
     printf("\n[Sistema]\nConfirma a inserção do registro abaixo? (S/N)\n\n");
     printf("%-4s %-17s %-20s %-7s %-12s\n", "ID", "CPF", "Nome", "Idade", "Data_Cadastro");
     paciente_imprimir(novo);
@@ -213,6 +223,7 @@ void ui_inserir(BDPaciente *bd) {
 
 // tem que chamar consultar primeiro para verificar se o paciente esta na memoria 
 void ui_atualizar(BDPaciente *bd) {
+    // mostra pacientes para o usuário escolher
     if (!ui_exibir_por_nome_ou_cpf(bd)) {
         printf("Retornando ao menu...\n");
         return;
@@ -315,8 +326,8 @@ void ui_atualizar(BDPaciente *bd) {
 
 // tem que chamar consultar primeiro para verificar se o paciente esta na memoria 
 void ui_remover(BDPaciente *bd) {
-    ui_exibir_por_nome_ou_cpf(bd);
-    if (!ui_exibir_por_nome_ou_cpf(bd)) {
+    ui_exibir_por_nome_ou_cpf(bd); // primeira exibição
+    if (!ui_exibir_por_nome_ou_cpf(bd)) { // segunda tentativa
         return;
     }
     
