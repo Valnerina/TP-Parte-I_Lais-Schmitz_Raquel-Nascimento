@@ -5,8 +5,8 @@
 #include <string.h>
 
 BDPaciente *bd_criar(void) {
-    BDPaciente *bd = malloc(sizeof(BDPaciente));
-    if (bd) bd->inicio = NULL;
+    BDPaciente *bd = malloc(sizeof(BDPaciente)); // Aloca memória para o banco
+    if (bd) bd->inicio = NULL; // Inicializa lista vazia
     return bd;
 }
 
@@ -15,48 +15,48 @@ void bd_destruir(BDPaciente *bd) {
     while (atual) {
         No *temp = atual;
         atual = atual->proximo;
-        free(temp);
+        free(temp); // Libera cada nó
     }
-    free(bd);
+    free(bd); // Libera a estrutura do banco
 }
 
 void bd_inserir(BDPaciente *bd, Paciente p) {
-    No *novo = malloc(sizeof(No));
-    novo->paciente = p;
-    novo->proximo = bd->inicio;
+    No *novo = malloc(sizeof(No)); // Cria novo nó
+    novo->paciente = p; // Atribui paciente
+    novo->proximo = bd->inicio; // Insere no início
     bd->inicio = novo;
 }
 
 void bd_carregar_arquivo(BDPaciente *bd, const char *filename) {
-    FILE *arquivo = fopen(filename, "r");
+    FILE *arquivo = fopen(filename, "r"); // Abre arquivo para leitura
     if (!arquivo) {
         printf("Arquivo %s não encontrado.\n", filename);
         return;
     }
     char linha[256];
-    fgets(linha, sizeof(linha), arquivo); // pula cabeçalho
-    while (fgets(linha, sizeof(linha), arquivo)) {
-        Paciente p = paciente_parse(linha);
-        bd_inserir(bd, p);
+    fgets(linha, sizeof(linha), arquivo); // Pula cabeçalho
+    while (fgets(linha, sizeof(linha), arquivo)) { 
+        Paciente p = paciente_parse(linha); // Converte linha para paciente
+        bd_inserir(bd, p); // Insere no banco
     }
-    fclose(arquivo);
+    fclose(arquivo); // Fecha arquivo
 }
 
 void bd_salvar_arquivo(BDPaciente *bd, const char *filename) {
-    FILE *arquivo = fopen(filename, "w");
+    FILE *arquivo = fopen(filename, "w"); // Abre arquivo para escrita
     if (!arquivo) {
         printf("Erro ao salvar em %s\n", filename);
         return;
     }
-    fprintf(arquivo, "ID,CPF,Nome,Idade,Data_Cadastro\n");
+    fprintf(arquivo, "ID,CPF,Nome,Idade,Data_Cadastro\n"); // Cabeçalho CSV
     No *atual = bd->inicio;
     while (atual) {
         Paciente p = atual->paciente;
-        fprintf(arquivo, "%d,%s,%s,%d,%s\n",
+        fprintf(arquivo, "%d,%s,%s,%d,%s\n", // Escreve paciente
                 p.id, p.cpf, p.nome, p.idade, p.data_cadastro);
         atual = atual->proximo;
     }
-    fclose(arquivo);
+    fclose(arquivo); // Fecha arquivo
 }
 
 void bd_imprimir(BDPaciente *bd, int paginacao) {
@@ -66,10 +66,10 @@ void bd_imprimir(BDPaciente *bd, int paginacao) {
            "ID", "CPF", "Nome", "Idade", "Data_Cadastro");
     printf("-----------------------------------------------------------\n");
     while (atual) {
-        paciente_imprimir(atual->paciente);
+        paciente_imprimir(atual->paciente); // Mostra paciente
         atual = atual->proximo;
         count++;
-        if (count % paginacao == 0) {
+        if (count % paginacao == 0) { // Controle de página
             char op;
             printf("\n-- Página %d -- ENTER p/ continuar, Q p/ sair: ",
                    count/paginacao);
@@ -77,7 +77,7 @@ void bd_imprimir(BDPaciente *bd, int paginacao) {
             if (op == 'Q' || op == 'q') break;
         }
     }
-    printf("\nTotal: %d pacientes.\n", count);
+    printf("\nTotal: %d pacientes.\n", count); // Mostra total
 }
 
 void bd_buscar(BDPaciente *bd, const char *query, int tipo) {
@@ -87,7 +87,7 @@ void bd_buscar(BDPaciente *bd, const char *query, int tipo) {
         Paciente p = atual->paciente;
         if ((tipo == 1 && strncasecmp(p.nome, query, strlen(query)) == 0) ||
             (tipo == 2 && strncmp(p.cpf, query, strlen(query)) == 0)) {
-            paciente_imprimir(p);
+            paciente_imprimir(p); // Imprime se encontrou
             encontrou = 1;
         }
         atual = atual->proximo;
@@ -99,33 +99,33 @@ void bd_buscar(BDPaciente *bd, const char *query, int tipo) {
 No* bd_buscar_por_id(BDPaciente *bd, int id) {
     No *atual = bd->inicio;
     while (atual) {
-        if (atual->paciente.id == id)
+        if (atual->paciente.id == id) // Verifica ID
             return atual;
         atual = atual->proximo;
     }
-    return NULL;
+    return NULL; // Não achou
 }
 
 int bd_atualizar(BDPaciente *bd, int id, Paciente novo) {
-    No *n = bd_buscar_por_id(bd, id);
-    if (!n) return 0; // não encontrado
-    n->paciente = novo;
-    return 1;
+    No *n = bd_buscar_por_id(bd, id); // Busca nó por ID
+    if (!n) return 0; // Não encontrou
+    n->paciente = novo; // Atualiza dados
+    return 1; // Sucesso
 }
 
 int bd_remover(BDPaciente *bd, int id) {
     No *atual = bd->inicio, *anterior = NULL;
     while (atual) {
-        if (atual->paciente.id == id) {
+        if (atual->paciente.id == id) { // Achou paciente
             if (anterior)
-                anterior->proximo = atual->proximo;
+                anterior->proximo = atual->proximo; // Remove do meio/fim
             else
-                bd->inicio = atual->proximo;
-            free(atual);
+                bd->inicio = atual->proximo; // Remove do início
+            free(atual); // Libera memória
             return 1;
         }
         anterior = atual;
         atual = atual->proximo;
     }
-    return 0;
+    return 0; // Não encontrou
 }
